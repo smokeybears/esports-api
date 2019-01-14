@@ -1,0 +1,19 @@
+{
+  "name": "esports-api",
+  "version": "1.0.0",
+  "description": "API for esports application",
+  "main": "serverStart.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smokeybears/esports-api.git"
+  },
+  "author": "Blake Hill, Jason Yan, Nathaniel DaDalto, Peter Cusack, Sean Billideau",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/smokeybears/esports-api/issues"
+  },
+  "homepage": "https://github.com/smokeybears/esports-api#readme"
+}
