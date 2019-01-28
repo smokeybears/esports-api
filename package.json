@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/smokeybears/esports-api/issues"
   },
-  "homepage": "https://github.com/smokeybears/esports-api#readme"
+  "homepage": "https://github.com/smokeybears/esports-api#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.3",
+    "moment": "^2.24.0",
+    "pg": "^7.8.0",
+    "restify": "^7.5.0",
+    "uuid": "^3.3.2"
+  }
 }
