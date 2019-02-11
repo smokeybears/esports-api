@@ -40,8 +40,12 @@ server.post('/user', createUser);
 server.post('/user/login', login);
 server.get('/user/:username', checkSession, getUser);
 server.post('/user/:username/logout', checkSession, logout)
+server.post('/users/:username/validSession', checkSession, (req, res, next) => {
+	res.json({session: req.body.session})
+})
 
 server.listen(8080, () => {
 	console.log(`Running on ${server.url}`);
 });
+
 exports.server = server;

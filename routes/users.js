@@ -20,6 +20,7 @@ const getUser = (req, res, next) => {
 
 // POST /users/ body: {email, password, username}//
 const createUser = ({ params }, res, next) => {
+	console.log('creating user')
 	if (!params.username || !params.email || !params.password){
 		res.json({error: 'Missing argument'})
 		res.status(400)
