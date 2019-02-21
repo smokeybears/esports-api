@@ -1,4 +1,4 @@
-const  pgPool = require('../dbPool');
+const pgPool = require('../dbPool');
 const bcrypt = require('bcrypt')
 
 const dbErrorCatch = (error) => {
@@ -11,6 +11,7 @@ const dbErrorCatch = (error) => {
 	// 		return {httpCode: 500,  error}
 	// }
 }
+
 const getUser = ({ username }) => {
 	return pgPool.query('\
 		SELECT * FROM app_user \
@@ -44,6 +45,13 @@ const validUserPass = ({username, password}) => {
 		}
 	})
 	.catch(dbErrorCatch);
+}
+
+const createUserGame = ({username, game}) => {
+	return pgPool.query('\
+		INSERT INTO user_game(username, game)\
+		values($1, $2)',
+		[username, game])
 }
 
 // These should be moved into a seperate file.. //
@@ -83,5 +91,6 @@ module.exports = {
 	createSession,
 	validateSession,
 	validUserPass,
-	deleteSession
+	deleteSession,
+	createUserGame
 }

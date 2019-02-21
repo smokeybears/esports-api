@@ -41,19 +41,34 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE app_user (
-    id integer NOT NULL,
+    username character varying(40) NOT NULL,
     email character varying(40),
-    username character varying(40),
     password character varying(100),
+    profile_image character varying(100),
+    banner_image character varying(100),
     date_added timestamp without time zone DEFAULT now()
 );
 
 
 --
--- Name: app_user_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: comment; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE app_user_id_seq
+CREATE TABLE comment (
+    id integer NOT NULL,
+    post_id integer NOT NULL,
+    body character varying(10000) NOT NULL,
+    author character varying(40) NOT NULL,
+    score integer DEFAULT 0,
+    date_added timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: comment_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE comment_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -62,10 +77,107 @@ CREATE SEQUENCE app_user_id_seq
 
 
 --
--- Name: app_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE app_user_id_seq OWNED BY app_user.id;
+ALTER SEQUENCE comment_id_seq OWNED BY comment.id;
+
+
+--
+-- Name: forum; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE forum (
+    id integer NOT NULL,
+    game integer NOT NULL,
+    title character varying(60) NOT NULL,
+    description character varying(250),
+    banner_image character varying(100)
+);
+
+
+--
+-- Name: forum_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE forum_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: forum_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE forum_id_seq OWNED BY forum.id;
+
+
+--
+-- Name: game; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE game (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    publisher character varying(50)
+);
+
+
+--
+-- Name: game_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE game_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: game_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE game_id_seq OWNED BY game.id;
+
+
+--
+-- Name: post; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE post (
+    id integer NOT NULL,
+    forum_id integer NOT NULL,
+    author character varying(40) NOT NULL,
+    title character varying(100),
+    body character varying(10000),
+    multimedia character varying(100),
+    score integer DEFAULT 0,
+    date_added timestamp without time zone DEFAULT now()
+);
+
+
+--
+-- Name: post_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE post_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: post_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE post_id_seq OWNED BY post.id;
 
 
 --
@@ -84,7 +196,7 @@ CREATE TABLE schema_migrations (
 CREATE TABLE session (
     username character varying(40) NOT NULL,
     session_id uuid NOT NULL,
-    expires timestamp without time zone,
+    expires timestamp without time zone DEFAULT '2019-02-19 00:00:00'::timestamp without time zone,
     created_at timestamp without time zone DEFAULT now()
 );
 
@@ -93,7 +205,28 @@ CREATE TABLE session (
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY app_user ALTER COLUMN id SET DEFAULT nextval('app_user_id_seq'::regclass);
+ALTER TABLE ONLY comment ALTER COLUMN id SET DEFAULT nextval('comment_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY forum ALTER COLUMN id SET DEFAULT nextval('forum_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY game ALTER COLUMN id SET DEFAULT nextval('game_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY post ALTER COLUMN id SET DEFAULT nextval('post_id_seq'::regclass);
 
 
 --
@@ -109,15 +242,39 @@ ALTER TABLE ONLY app_user
 --
 
 ALTER TABLE ONLY app_user
-    ADD CONSTRAINT app_user_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT app_user_pkey PRIMARY KEY (username);
 
 
 --
--- Name: app_user_username_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: comment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY app_user
-    ADD CONSTRAINT app_user_username_key UNIQUE (username);
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: forum_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY forum
+    ADD CONSTRAINT forum_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: game_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY game
+    ADD CONSTRAINT game_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: post_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY post
+    ADD CONSTRAINT post_pkey PRIMARY KEY (id);
 
 
 --
@@ -134,6 +291,22 @@ ALTER TABLE ONLY schema_migrations
 
 ALTER TABLE ONLY session
     ADD CONSTRAINT session_pkey PRIMARY KEY (session_id);
+
+
+--
+-- Name: comment_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT comment_post_id_fkey FOREIGN KEY (post_id) REFERENCES post(id);
+
+
+--
+-- Name: forum_game_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY forum
+    ADD CONSTRAINT forum_game_fkey FOREIGN KEY (game) REFERENCES game(id);
 
 
 --
@@ -176,6 +349,10 @@ SET search_path = public, pg_catalog;
 
 INSERT INTO schema_migrations VALUES ('20190123155823');
 INSERT INTO schema_migrations VALUES ('20190125002321');
+INSERT INTO schema_migrations VALUES ('20190220162349');
+INSERT INTO schema_migrations VALUES ('20190220162525');
+INSERT INTO schema_migrations VALUES ('20190220162902');
+INSERT INTO schema_migrations VALUES ('20190220163540');
 
 
 --

@@ -1,11 +1,4 @@
 const restify = require('restify');
-const {
-	getUser, 
-	createUser,
-	login,
-	validUserPass,
-	logout
-	} = require('./routes/users');
 const db = require('./db/queries/users')
 const server = restify.createServer();
 
@@ -36,6 +29,13 @@ const checkSession = (req, res, next) => {
 }
 
 /* User */
+const {
+	getUser, 
+	createUser,
+	login,
+	validUserPass,
+	logout
+	} = require('./routes/users');
 server.post('/user', createUser);
 server.post('/user/login', login);
 server.get('/user/:username', checkSession, getUser);
@@ -43,6 +43,15 @@ server.post('/user/:username/logout', checkSession, logout)
 server.post('/users/:username/validSession', checkSession, (req, res, next) => {
 	res.json({session: req.body.session})
 })
+
+/* Game */
+const {
+	getGame,
+	createGame
+} = require('./routes/')
+server.post('/game', createGame)
+server.get('/game', getGame)
+
 
 server.listen(8080, () => {
 	console.log(`Running on ${server.url}`);
