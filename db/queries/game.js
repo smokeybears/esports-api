@@ -3,12 +3,6 @@ const pgPool = require('../dbPool');
 const dbErrorCatch = (error) => {
 	console.log("DB Error:", error)
 	throw error;
-	// switch(error.code){
-	// 	case 23505: //
-	// 		return {httpCode: 422, error}
-	// 	default:
-	// 		return {httpCode: 500,  error}
-	// }
 }
 
 const createGame = ({name, publisher}) => {
@@ -26,4 +20,9 @@ const getGame = ({name}) => {
 		WHERE game = $1',
 		[name])
 	.catch(dbErrorCatch)
+}
+
+module.exports = {
+	createGame,
+	getGame
 }

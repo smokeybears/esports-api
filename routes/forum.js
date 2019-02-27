@@ -18,5 +18,5 @@ const getForum = (req, res, next) => {
 
 module.exports = {
 	createForum,
-	getForum
+	get
 }
