@@ -30,6 +30,13 @@ const checkSession = (req, res, next) => {
 	})
 }
 
+server.get('/ping', (req, res, next) => {
+	res.json({
+		status: 'live'
+	})
+	return next()
+})
+
 /* User */
 const userRoutes = require('./routes/users');
 server.post('/user', userRoutes.createUser);

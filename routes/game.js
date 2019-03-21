@@ -70,21 +70,21 @@ const getGameTournaments = ({ params }, res, next) => {
 const getMatchDetails = (req, res, next) => {
 	const params = req.params
 	const query = req.query
-	console.log('impo', `${PANDA_API_URL}/${params.game_name}/matches?filter[id]=${query.ids}&token=${process.env.PANDA_API_KEY}`)
 	return fetch(`${PANDA_API_URL}/${params.game_name}/matches?filter[id]=${query.ids}&token=${process.env.PANDA_API_KEY}`)
 	.then(r => r.json())
 	.then(body => {
+		console.log(body)
 		let matches = body.map(match => {
 			console.log('errr obasdfa', match.opponents)
 			// Names and such need to be changed here at some point
-			let team1ID = match.opponents[0].opponent.id
+			let team1ID = match.opponents[0].opponent.id 
 			let team2ID = match.opponents[1].opponent.id
 			return {
 				date: match.begin_at,
 				winner: match.winner_id,
 				title: match.name,
 				description: match.serie.name,
-				team1: match.opponents[0].opponent.image_url,
+				team1: match.opponents[0].opponent.image_url, 
 				team2: match.opponents[1].opponent.image_url,
 				// There probably a better es6 way to do this
 				team1Score: match.results[0].team_id == team1ID ? match.results[0].score : match.results[1].score,

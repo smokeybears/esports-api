@@ -31,7 +31,7 @@ const createUser = ({ params }, res, next) => {
 		if (error) {
 			res.status(400)
 			res.json({ error: error.details })
-			return next()
+			return next(false)
 		// user created
 		} else {
 			return createSession(params.username)
@@ -44,9 +44,9 @@ const createUser = ({ params }, res, next) => {
 	.catch(err => {
 		//  unique constraint violation
 		if (err.code == '23505'){
-			res.json({'Error': 'Email already exist'})
+			res.json({error: 'Email already exist'})
 			res.status(400)
-			return next()			
+			return next(false)			
 		}
 		throw err;
 	});
