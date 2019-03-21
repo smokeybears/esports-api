@@ -2,7 +2,7 @@ const db = require('../db/queries/users');
 const uuid = require('uuid/v4')
 const Moment = require('Moment')
 
-// GET /users/:username //
+// GET /users/:username 
 const getUser = (req, res, next) => {
 	return db.getUser({username: req.params.username})
 	.then(({rows}) => {
@@ -18,9 +18,8 @@ const getUser = (req, res, next) => {
 	})
 }
 
-// POST /users/ body: {email, password, username}//
+// POST /users/ body: {email, password, username}
 const createUser = ({ params }, res, next) => {
-	console.log('creating user')
 	if (!params.username || !params.email || !params.password){
 		res.json({error: 'Missing argument'})
 		res.status(400)
@@ -32,7 +31,7 @@ const createUser = ({ params }, res, next) => {
 		if (error) {
 			res.status(400)
 			res.json({ error: error.details })
-			return next()
+			return next(false)
 		// user created
 		} else {
 			return createSession(params.username)
@@ -45,12 +44,31 @@ const createUser = ({ params }, res, next) => {
 	.catch(err => {
 		//  unique constraint violation
 		if (err.code == '23505'){
-			res.json({'Error': 'Email already exist'})
+			res.json({error: 'Email already exist'})
 			res.status(400)
-			return next()			
+			return next(false)			
 		}
 		throw err;
-	})
+	});
+}
+
+
+// POST /user/:username/game/:name
+const addUserGame = ({username, game}) => {
+	return db.createUserGame({username, game})
+	.then(({rows}) => {
+		res.json({userGame: rows[0]});
+		return next();
+	});
+}
+
+// POST /user/:username/forum/:id 
+const addUserForum = ({username, form_id}) => {
+	return db.createUserForm({username, form_id})
+	.then(({rows}) => {
+		res.json({userForm: rows[0]});
+		return next();
+	});
 }
 
 // POST /users/login //
@@ -91,14 +109,6 @@ const logout = (req, res, next) => {
 			return res.json({logout: true})
 		}
 		return next();
-	})
-}
-
-// Helpers //
-validateSession = (username, session) => {
-	return db.validateSession(username, session)
-	.then(({ rows }) => {
-		return rows.length > 0;
 	})
 }
 
