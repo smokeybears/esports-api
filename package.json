@@ -18,7 +18,9 @@
   "homepage": "https://github.com/smokeybears/esports-api#readme",
   "dependencies": {
     "bcrypt": "^3.0.3",
+    "bluebird": "^3.5.4",
     "dotenv": "^6.2.0",
+    "faker": "^4.1.0",
     "moment": "^2.24.0",
     "node-fetch": "^2.3.0",
     "pg": "^7.8.0",

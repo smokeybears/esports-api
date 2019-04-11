@@ -33,8 +33,18 @@ const getMultiPost = ({ params }, res, next) => {
 	});
 }
 
+const getGamePost = (req, res, next) => {
+	return db.getGamePost({game: req.params.game, limit: 30})
+	.then(r => r.rows)
+	.then(gamePosts => {
+		res.json({Post: gamePosts})
+		return next()
+	})
+}
+
 module.exports = {
 	createPost,
 	getPost,
-	getMultiPost
+	getMultiPost,
+	getGamePost
 }

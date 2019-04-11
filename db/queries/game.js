@@ -22,7 +22,13 @@ const getGame = ({name}) => {
 	.catch(dbErrorCatch)
 }
 
+const getGames = () => {
+	return pgPool.query('SELECT * FROM game')
+}
+
+
 module.exports = {
 	createGame,
-	getGame
+	getGame,
+	getGames
 }
