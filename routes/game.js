@@ -11,6 +11,16 @@ const createGame = ({ params }, res, next) => {
 	})
 }
 
+// Get all games for game scroll
+const getAllGames = (req, res, next) => {
+	return db.getGames()
+	.then(q => {
+		res.json({games: q.rows})
+		return next()
+	})
+}
+
+
 // GET /game/name
 const getGame = (req, res, next) => {
  return db.getGame({name: req.params.name})
@@ -100,7 +110,8 @@ module.exports = {
 	getGame,
 	createGame,
 	getGameTournaments,
-	getMatchDetails
+	getMatchDetails,
+	getAllGames
 }
 const updateGame = (req, res, next) => {
  // laters

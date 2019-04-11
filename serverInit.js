@@ -37,6 +37,7 @@ server.get('/ping', (req, res, next) => {
 	return next()
 })
 
+// the singular and plural are all messed up
 /* User */
 const userRoutes = require('./routes/users');
 server.post('/user', userRoutes.createUser);
@@ -52,15 +53,36 @@ const {
 	getGame,
 	createGame,
 	getGameTournaments,
-	getMatchDetails
+	getMatchDetails,
+	getAllGames
 } = require('./routes/game')
 
 //server.post('/game', createGame)
 //server.get('/game', getGame)
 
+server.get('/games', getAllGames)
 server.get('/games/:esport/tournaments/:month', getGameTournaments)
 server.get('/games/:game_name/matches', getMatchDetails)
 
+/* Post */
+const {
+	getGamePost
+} = require('./routes/posts')
+
+server.get('/post/:game', getGamePost)
+
+/* Forums */
+const {
+	getGameForums,
+	createForum,
+	getForum,
+	getForumPost
+} = require('./routes/forum')
+
+server.post('/forums', createForum)
+server.get('/forums/:game', getGameForums)
+server.get('/forumsg/:id', getForum) // this name route will be changed very soon just a quick fix to solve the conflict, all the namespacing needs to be fixed and made consistent
+server.get('/forums/:forumID/post', getForumPost)
 
 server.listen(8080, () => {
 	console.log(`Running on ${server.url}`);
